@@ -64,7 +64,7 @@ function nextItem() {
     document.getElementById("textA").textContent = "✓ 完了しました！";
     document.getElementById("textB").textContent = "";
     disableButtons(true);
-    updateStatus(`完了 - 比較回数: ${currentComparisons}/${totalComparisons} (100%) | 確定済み: ${ranking.length}件`);
+    updateProgressStatus(`完了 - 比較回数: ${currentComparisons}/${totalComparisons} (100%)`);
     return;
   }
 
@@ -167,8 +167,8 @@ function render() {
       .join("");
   }
 
-  // ステータス更新
-  updateStatus(`確定済み: ${ranking.length}件`);
+  // ランキング件数を更新
+  updateRankingStatus();
 }
 
 /**
@@ -182,23 +182,26 @@ function disableButtons(disabled) {
 }
 
 /**
- * ステータス表示を更新
+ * 進捗ステータスを更新（比較セクション）
  * @param {string} message - 表示するメッセージ
  */
-function updateStatus(message) {
-  document.getElementById("status").textContent = message;
+function updateProgressStatus(message = null) {
+  if (message) {
+    document.getElementById("progressStatus").textContent = message;
+  } else {
+    const progress = totalComparisons > 0
+      ? Math.floor((currentComparisons / totalComparisons) * 100)
+      : 0;
+    const msg = `比較回数: ${currentComparisons}/${totalComparisons} (${progress}%)`;
+    document.getElementById("progressStatus").textContent = msg;
+  }
 }
 
 /**
- * 進捗状況を更新（比較回数と進捗率）
+ * ランキングステータスを更新（ランキングセクション）
  */
-function updateProgressStatus() {
-  const progress = totalComparisons > 0
-    ? Math.floor((currentComparisons / totalComparisons) * 100)
-    : 0;
-
-  const message = `比較回数: ${currentComparisons}/${totalComparisons} (${progress}%) | 確定済み: ${ranking.length}件`;
-  updateStatus(message);
+function updateRankingStatus() {
+  document.getElementById("rankingStatus").textContent = `確定済み: ${ranking.length}件`;
 }
 
 /**
